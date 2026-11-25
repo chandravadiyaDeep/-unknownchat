@@ -152,7 +152,7 @@
     }
     function showView(name) {
       views.forEach(id => $(id).classList.toggle('hidden', id !== name));
-      const titles = {'home-view':'Start with a question','ask-view':'Ask something real','answer-view':'Be someone's human','waiting-view':'Finding your person…','chat-view':'A human connection'};
+      const titles = {'home-view':'Start with a question','ask-view':'Ask something real','answer-view':"Be someone's human",'waiting-view':'Finding your person…','chat-view':'A human connection'};
       $('panel-title').textContent = titles[name] || 'unknownchat';
     }
     function randomId() {
