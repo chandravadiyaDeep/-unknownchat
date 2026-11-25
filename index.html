@@ -129,7 +129,7 @@
     // Trystero's Torrent strategy uses public WebTorrent trackers for peer discovery.
     import { joinRoom } from 'https://esm.run/@trystero-p2p/torrent';
 
-    const APP_ID = 'com.unknownchat.anonymous-qa';
+    const APP_ID = 'chandravadiyaDeep/unknownchat';
     const ROOM_ID = 'global-waiting-lobby-v1';
     const HEARTBEAT_MS = 4000;
     const PEER_TTL_MS = 14000;
@@ -143,7 +143,7 @@
       room: null, selfPeerId: null, presenceAction: null, controlAction: null, chatAction: null,
       peers: new Map(), role: null, question: '', activePeer: null, matchId: null,
       pendingPeer: null, pendingMatchId: null, offerTimer: null, heartbeat: null,
-      messages: [], typingTimer: null, lastPresence: 0, destroyed: false
+      messages: [], messageTimes: [], incomingMessageTimes: [], typingTimer: null, lastPresence: 0, destroyed: false
     };
 
     function toast(message) {
@@ -182,7 +182,15 @@
 
     async function connectLobby() {
       try {
-        state.room = joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID);
+        state.room = joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID, {
+          onJoinError: ({peerId, error}) => {
+            console.warn('WebRTC peer connection failed', peerId, error);
+            if (state.pendingPeer === peerId) {
+              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; announce(); tryMatch();
+            }
+            toast('A peer connection failed. We will keep looking for another person.');
+          }
+        });
         const self = await state.room.getSelf();
         state.selfPeerId = self.peerId;
         state.presenceAction = state.room.makeAction('presence');
@@ -212,7 +220,7 @@
             state.activePeer = peerId;
             state.matchId = data.matchId;
             state.question = question;
-            state.messages = [];
+            state.messages = []; state.messageTimes = []; state.incomingMessageTimes = [];
             state.controlAction.send({type:'accepted', matchId:state.matchId}, {target:peerId}).catch(()=>{});
             renderChat();
             announce();
@@ -223,7 +231,7 @@
             state.matchId = data.matchId;
             state.pendingPeer = null;
             state.pendingMatchId = null;
-            state.messages = [];
+            state.messages = []; state.messageTimes = []; state.incomingMessageTimes = [];
             renderChat();
             announce();
           } else if (data.type === 'reject') {
@@ -247,6 +255,10 @@
           if (context.peerId !== state.activePeer || !data || data.matchId !== state.matchId || data.type !== 'message') return;
           const message = safeText(data.text, MAX_MESSAGE);
           if (!message) return;
+          const now = Date.now();
+          state.incomingMessageTimes = state.incomingMessageTimes.filter(time => now - time < 10000);
+          if (state.incomingMessageTimes.length >= 10) return;
+          state.incomingMessageTimes.push(now);
           addMessage(message, false);
         });
 
@@ -348,6 +360,7 @@
       clearTimeout(state.offerTimer); clearTimeout(state.typingTimer);
       state.role = null; state.question = ''; state.activePeer = null; state.matchId = null;
       state.pendingPeer = null; state.pendingMatchId = null; state.messages = [];
+      state.messageTimes = []; state.incomingMessageTimes = [];
       $('messages').replaceChildren(); $('question-input').value = ''; $('question-count').textContent = '0 / 500';
       $('message-input').value = ''; $('typing-indicator').textContent = '';
       showView('home-view'); announce();
@@ -379,6 +392,10 @@
       event.preventDefault();
       const text = safeText($('message-input').value, MAX_MESSAGE);
       if (!text || !state.activePeer) return;
+      const now = Date.now();
+      state.messageTimes = state.messageTimes.filter(time => now - time < 10000);
+      if (state.messageTimes.length >= 8) { toast('Please slow down and give the other person time to reply.'); return; }
+      state.messageTimes.push(now);
       state.chatAction.send({type:'message', matchId:state.matchId, text}, {target:state.activePeer})
         .then(() => addMessage(text, true))
         .catch(() => toast('Message could not be sent. The peer may have disconnected.'));
