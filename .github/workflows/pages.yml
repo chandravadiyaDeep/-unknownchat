@@ -34,9 +34,9 @@ jobs:
               raise SystemExit("Module script not found in index.html")
           script = match.group(1)
           Path("/tmp/unknownchat.mjs").write_text(script, encoding="utf-8")
-          ids = re.findall(r'\\bid="([^"]+)"', html)
+          ids = re.findall(r'\bid="([^"]+)"', html)
           duplicates = sorted({item for item in ids if ids.count(item) > 1})
-          referenced = set(re.findall(r"\\$\\('([^']+)'\\)", script))
+          referenced = set(re.findall(r"\$\('([^']+)'\)", script))
           missing = sorted(referenced - set(ids))
           if duplicates:
               raise SystemExit(f"Duplicate HTML ids: {duplicates}")
