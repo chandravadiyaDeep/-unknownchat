@@ -172,7 +172,7 @@
       $('peer-count').textContent = 'LOBBY · ' + count + ' PEERS';
     }
     function localPresence() {
-      return {type:'presence', role:state.role, question:state.role === 'asker' ? state.question : '', busy:!!state.activePeer || !!state.pendingPeer, waiting:!!state.role && !state.activePeer, seenAt:Date.now()};
+      return {type:'presence', role:state.role, busy:!!state.activePeer || !!state.pendingPeer, waiting:!!state.role && !state.activePeer, seenAt:Date.now()};
     }
     async function announce() {
       if (!state.presenceAction || !state.selfPeerId) return;
@@ -196,7 +196,7 @@
           if (!data || data.type !== 'presence' || context.peerId === state.selfPeerId) return;
           state.peers.set(context.peerId, {
             peerId:context.peerId, role:data.role === 'asker' || data.role === 'answerer' ? data.role : null,
-            question:safeText(data.question, MAX_QUESTION), busy:!!data.busy, waiting:!!data.waiting, seenAt:Date.now()
+            question:'', busy:!!data.busy, waiting:!!data.waiting, seenAt:Date.now()
           });
           updatePeerCount();
           tryMatch();
@@ -232,6 +232,10 @@
           } else if (data.type === 'reject') {
             if (state.pendingPeer === peerId && state.pendingMatchId === data.matchId) {
               clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; tryMatch();
+            }
+          } else if (data.type === 'cancel') {
+            if (state.activePeer === peerId && state.matchId === data.matchId && state.role === 'answerer') {
+              state.activePeer = null; state.matchId = null; state.question = ''; state.messages = []; startWaiting('answerer');
             }
           } else if (data.type === 'end') {
             if (state.activePeer === peerId && state.matchId === data.matchId) resetToHome('The other person ended the chat.');
@@ -300,6 +304,7 @@
       });
       state.offerTimer = setTimeout(() => {
         if (state.pendingPeer === candidate.peerId && state.pendingMatchId === matchId) {
+          state.controlAction.send({type:'cancel', matchId}, {target:candidate.peerId}).catch(()=>{});
           state.pendingPeer = null; state.pendingMatchId = null; announce(); tryMatch();
         }
       }, OFFER_TIMEOUT_MS);
