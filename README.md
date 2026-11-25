@@ -22,11 +22,11 @@ Then open http://localhost:8000 in two separate browser profiles (for example, a
 ## Deploy with GitHub Pages
 
 1. Open **Settings → Pages** in this repository.
-2. Under **Build and deployment**, choose **Deploy from a branch**.
-3. Select branch `main` and folder `/ (root)`, then save.
-4. Wait for the Pages deployment and open the published URL.
+2. Under **Build and deployment → Source**, select **GitHub Actions**.
+3. Open the **Actions** tab and wait for the `Deploy unknownchat to GitHub Pages` workflow to finish.
+4. The workflow summary will show the published URL.
 
-The site is static and requires no build command.
+The site is static and requires no build command. Every push to `main` triggers a deployment.
 
 ## Matching and privacy notes
 
