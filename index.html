@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090b12">
+  <meta name="description" content="Ask a real person a question or help someone anonymously. Private, text-only conversations powered by peer-to-peer WebRTC. No accounts and no chat history.">
+  <meta name="robots" content="index,follow">
+  <title>unknownchat — Ask humans. Answer honestly.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--bg:#090b12;--panel:#111521;--panel2:#151b29;--line:#252d40;--muted:#8c96aa;--text:#f3f5fa;--blue:#8aa4ff;--mint:#80edc2;--pink:#f5a4c7;--danger:#ff8585;--radius:22px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#1c2850 0,transparent 42%),var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;min-height:100vh}
+    button,textarea{font:inherit}button{cursor:pointer}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+    .wrap{width:min(1100px,calc(100% - 36px));margin:auto}.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff10}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:800;letter-spacing:-.7px;font-size:20px}.brandmark{width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--mint));display:grid;place-items:center;color:#09101b;font-weight:900}
+    .status-pill{font:11px 'DM Mono',monospace;color:var(--mint);border:1px solid #80edc244;background:#80edc20d;border-radius:99px;padding:8px 11px;display:flex;align-items:center;gap:7px}.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint)}
+    .hero{text-align:center;padding:76px 0 38px}.eyebrow{font:11px 'DM Mono',monospace;letter-spacing:2px;color:var(--mint);text-transform:uppercase}.hero h1{font-size:clamp(40px,7vw,76px);line-height:1.02;letter-spacing:-4px;margin:18px auto 16px;max-width:850px}.gradient{background:linear-gradient(100deg,#a7b8ff 10%,#80edc2 55%,#f5a4c7 95%);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:var(--muted);font-size:16px;line-height:1.8;max-width:610px;margin:0 auto}
+    .app{width:min(760px,100%);margin:22px auto 0;background:linear-gradient(145deg,#141a29,#0f131e);border:1px solid var(--line);border-radius:28px;padding:clamp(18px,4vw,32px);box-shadow:0 30px 100px #0008}
+    .app-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.app-head strong{font-size:14px}.micro{font:10px 'DM Mono',monospace;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+    .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.role-card{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:22px;text-align:left;transition:.2s;min-height:180px;color:var(--text)}.role-card:hover{transform:translateY(-3px);border-color:#8aa4ff99;background:#182034}.role-card .emoji{font-size:25px}.role-card h2{font-size:18px;margin:15px 0 7px}.role-card p{font-size:12px;color:var(--muted);line-height:1.65;margin:0}.role-card.ask{border-top:2px solid var(--blue)}.role-card.answer{border-top:2px solid var(--mint)}
+    .field-label{display:block;font-size:12px;font-weight:700;margin:0 0 9px}.question{width:100%;min-height:112px;resize:vertical;background:#090d17;border:1px solid var(--line);border-radius:15px;padding:15px;color:var(--text);outline:none;line-height:1.6}.question:focus{border-color:var(--blue)}.counter{text-align:right;color:var(--muted);font:10px 'DM Mono',monospace;margin-top:7px}
+    .primary,.secondary,.end-btn{border:0;border-radius:13px;padding:14px 18px;font-weight:800;transition:.2s}.primary{width:100%;margin-top:15px;color:#09101b;background:linear-gradient(100deg,#a7b8ff,#80edc2)}.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}.primary:disabled{opacity:.45;cursor:not-allowed;transform:none}.secondary{background:#20283a;color:var(--text);border:1px solid var(--line)}.end-btn{background:#3a2029;color:#ffb4bd;border:1px solid #75404b}
+    .hidden{display:none!important}.waiting{text-align:center;padding:28px 12px}.spinner{width:42px;height:42px;border:2px solid #ffffff18;border-top-color:var(--mint);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 18px}@keyframes spin{to{transform:rotate(360deg)}}.waiting h2{font-size:19px;margin:0 0 8px}.waiting p{font-size:12px;color:var(--muted);line-height:1.7;margin:0 auto 18px;max-width:400px}.wait-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+    .chat-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--line)}.partner{display:flex;align-items:center;gap:10px}.avatar{width:36px;height:36px;border-radius:13px;background:#1e2940;display:grid;place-items:center;color:var(--mint)}.partner small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.question-banner{margin:16px 0;padding:13px 15px;background:#8aa4ff12;border:1px solid #8aa4ff33;border-radius:14px}.question-banner small{font:10px 'DM Mono',monospace;color:var(--blue);text-transform:uppercase;letter-spacing:1px}.question-banner p{margin:7px 0 0;line-height:1.6;font-size:14px}
+    .messages{height:290px;overflow-y:auto;padding:10px 2px;display:flex;flex-direction:column;gap:11px}.bubble{max-width:82%;padding:11px 14px;border-radius:15px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}.bubble.mine{align-self:flex-end;background:#293858;border:1px solid #607bb455;border-bottom-right-radius:5px}.bubble.theirs{align-self:flex-start;background:#1b2433;border:1px solid var(--line);border-bottom-left-radius:5px}.bubble time{display:block;color:#aab4c9;font:9px 'DM Mono',monospace;margin-top:5px}.typing{height:18px;font-size:11px;color:var(--muted);padding-left:4px}.composer{display:flex;gap:9px}.composer input{min-width:0;flex:1;background:#090d17;border:1px solid var(--line);border-radius:13px;padding:13px;color:var(--text);outline:none}.composer input:focus{border-color:var(--mint)}.send-btn{border:0;border-radius:13px;padding:0 18px;background:var(--mint);color:#07120e;font-weight:900}
+    .notice{margin-top:15px;padding:12px 14px;background:#f5a4c70c;border:1px solid #f5a4c733;border-radius:13px;color:#d5bfd0;font-size:10px;line-height:1.65}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:52px auto}.feature{padding:20px;border:1px solid var(--line);border-radius:18px;background:#101521}.feature b{font-size:13px}.feature p{font-size:11px;color:var(--muted);line-height:1.7;margin:8px 0 0}.content{padding:22px 0 65px}.content h2{font-size:23px;letter-spacing:-.8px}.content p,.content li{font-size:13px;line-height:1.85;color:var(--muted)}.content h3{font-size:15px;margin-top:24px}.faq{border-top:1px solid var(--line);padding:16px 0}.faq h3{margin:0 0 7px}.legal{display:grid;grid-template-columns:1fr 1fr;gap:18px}.legal article{background:#101521;border:1px solid var(--line);border-radius:18px;padding:20px}.footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.footer nav{display:flex;gap:16px}
+    #toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#20283a;border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:12px;transition:.2s;z-index:10;max-width:calc(100% - 30px)}#toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:620px){.wrap{width:min(100% - 24px,1100px)}.topbar{height:64px}.hero{padding:55px 0 25px}.hero h1{letter-spacing:-2.5px}.hero p{font-size:13px}.role-grid{grid-template-columns:1fr}.role-card{min-height:145px}.features{grid-template-columns:1fr;margin:35px auto}.legal{grid-template-columns:1fr}.messages{height:260px}.app{border-radius:22px}.status-pill{font-size:9px}.footer{display:block}.footer nav{margin-top:13px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <header class="wrap topbar">
+    <a class="brand" href="#" aria-label="unknownchat home"><span class="brandmark">?</span> unknownchat</a>
+    <div class="status-pill"><span class="dot"></span><span id="network-status">CONNECTING</span></div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div class="eyebrow">A little less alone on the internet</div>
+      <h1>Ask anything.<br><span class="gradient">Meet a human.</span></h1>
+      <p>No profiles. No awkward introductions. Just one honest question, one real person, and a conversation that disappears when it ends.</p>
+
+      <section class="app" aria-label="Anonymous chat">
+        <div class="app-head"><strong id="panel-title">Start with a question</strong><span class="micro" id="peer-count">LOBBY · 0 PEERS</span></div>
+
+        <div id="home-view">
+          <div class="role-grid">
+            <button class="role-card ask" id="choose-ask" type="button"><span class="emoji">✳</span><h2>Ask a question</h2><p>Something on your mind? Find a real person willing to listen and answer.</p></button>
+            <button class="role-card answer" id="choose-answer" type="button"><span class="emoji">↗</span><h2>Answer someone</h2><p>Have a little time? Help a stranger see a different point of view.</p></button>
+          </div>
+          <div class="notice">Be kind. Never share passwords, financial details, your address, or other identifying information. You are talking to a stranger.</div>
+        </div>
+
+        <div id="ask-view" class="hidden">
+          <label class="field-label" for="question-input">What's your question?</label>
+          <textarea class="question" id="question-input" maxlength="500" placeholder="It can be serious, random, or something you've never asked out loud..." aria-describedby="question-count"></textarea>
+          <div class="counter" id="question-count">0 / 500</div>
+          <button class="primary" id="find-asker" type="button" disabled>Ask &amp; find a human →</button>
+          <button class="secondary" id="back-ask" type="button" style="width:100%;margin-top:9px">Go back</button>
+        </div>
+
+        <div id="answer-view" class="hidden">
+          <div class="waiting" style="padding:12px 8px 22px"><div style="font-size:32px">☼</div><h2>Ready to be someone's human?</h2><p>We'll look for someone waiting with a question. Your conversation is text-only and peer-to-peer.</p></div>
+          <button class="primary" id="find-answer" type="button">Find someone to answer →</button>
+          <button class="secondary" id="back-answer" type="button" style="width:100%;margin-top:9px">Go back</button>
+        </div>
+
+        <div id="waiting-view" class="hidden">
+          <div class="waiting"><div class="spinner"></div><h2 id="waiting-title">Finding your person…</h2><p id="waiting-copy">Keeping your place in the anonymous lobby. This can take a moment while another person joins.</p><div class="wait-actions"><button class="secondary" id="cancel-wait" type="button">Cancel</button></div></div>
+        </div>
+
+        <div id="chat-view" class="hidden">
+          <div class="chat-top"><div class="partner"><div class="avatar">✳</div><div><strong id="partner-label">You're connected</strong><small>Anonymous human · text only</small></div></div><button class="end-btn" id="end-chat" type="button">End chat</button></div>
+          <div class="question-banner" id="chat-question-wrap"><small>THE QUESTION</small><p id="chat-question"></p></div>
+          <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
+          <div class="typing" id="typing-indicator" aria-live="polite"></div>
+          <form class="composer" id="message-form"><input id="message-input" maxlength="2000" autocomplete="off" placeholder="Write a thoughtful reply…" aria-label="Your message"><button class="send-btn" type="submit" aria-label="Send message">↑</button></form>
+          <div class="notice">Don't share personal or sensitive information. Either person can end this chat at any time.</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="wrap features" aria-label="How it works">
+      <article class="feature"><b>↗ Direct by design</b><p>Chat messages travel between browsers over an encrypted WebRTC data channel. Signaling relays help peers find each other.</p></article>
+      <article class="feature"><b>◌ No chat history</b><p>This page does not write conversations to an application database or local storage. Messages live in this tab's memory while the chat is open.</p></article>
+      <article class="feature"><b>✳ Human, not a bot</b><p>Every conversation is with another person who chose to ask or answer. No AI-generated replies or automated profiles.</p></article>
+    </section>
+
+    <section class="wrap content" id="about">
+      <h2>A small corner of the internet for real conversations.</h2>
+      <p>unknownchat pairs people who have a question with people who are willing to answer. Choose a role, wait for a match, and talk privately. There are no public chat rooms, follower counts, profiles, or message archives.</p>
+      <h3>How matching works</h3>
+      <ol>
+        <li>An Asker submits a question and becomes available in the temporary lobby.</li>
+        <li>An Answerer joins and can be matched with one waiting Asker.</li>
+        <li>The browsers negotiate a direct WebRTC connection through Trystero. Chat messages are sent to the matched peer, not broadcast to the lobby.</li>
+        <li>When either person ends the chat or disconnects, the session is cleared from this page.</li>
+      </ol>
+      <h3>Community safety rules</h3>
+      <ul>
+        <li>Be respectful. Disagreement is okay; harassment, threats, hate, and sexual exploitation are not.</li>
+        <li>Never request or share passwords, payment information, exact location, phone numbers, or other sensitive personal details.</li>
+        <li>Do not use this service for emergencies. Contact local emergency services or someone you trust if you are in danger.</li>
+        <li>End the conversation immediately if it feels uncomfortable. You do not owe a stranger a reply.</li>
+        <li>Do not assume that a stranger's claims or advice are accurate. Use your judgment.</li>
+      </ul>
+      <h2>Frequently asked questions</h2>
+      <div class="faq"><h3>Do I need an account?</h3><p>No. There is no registration, username, profile, or password.</p></div>
+      <div class="faq"><h3>Are messages stored?</h3><p>unknownchat has no application database and does not intentionally save chat messages. Messages are held in browser memory during a session and cleared when the session ends or the page is closed. Your browser, operating system, network provider, or the other participant may still retain information outside this site's control.</p></div>
+      <div class="faq"><h3>Is this completely anonymous?</h3><p>No internet service can promise absolute anonymity. WebRTC peers may learn network information such as IP addresses, and public signaling infrastructure may process connection metadata. Do not share information that could identify you.</p></div>
+      <div class="faq"><h3>Can someone see my conversation in the lobby?</h3><p>The app sends chat messages only to the selected peer through a targeted Trystero action. The lobby uses temporary presence and matching messages. This is not a guarantee against a modified client or a compromised device.</p></div>
+      <div class="faq"><h3>Why can't I find anyone?</h3><p>There may be no one currently waiting in the opposite role. Connection discovery also depends on public signaling relays and your network allowing WebRTC connections. Keep the page open or try again later.</p></div>
+      <div class="faq"><h3>Does unknownchat provide professional advice?</h3><p>No. Answers are opinions from strangers, not medical, legal, financial, or professional advice.</p></div>
+
+      <h2 id="privacy">Privacy notice</h2>
+      <div class="legal"><article><h3>What this page handles</h3><p>Your selected role, question, temporary peer identifiers, connection status, and messages are held in volatile page memory to make matching and chat work. The app does not create accounts, use an application database, or intentionally persist conversation content.</p><p>Trystero uses third-party signaling relays to discover peers and exchange connection setup data. Your browser also contacts the static hosting provider and may load fonts from Google Fonts.</p></article><article><h3>Your choices and limits</h3><p>Do not disclose personal or sensitive information. End the chat or close the tab to clear this page's in-memory conversation state. The other participant can copy or capture anything displayed to them.</p><p>This notice is a product summary, not legal advice or a complete jurisdiction-specific privacy policy. Before public launch, identify the hosting provider, relay endpoints, applicable jurisdiction, contact details, and any advertising or analytics services you add.</p></article></div>
+
+      <h2 id="terms">Terms of use</h2>
+      <div class="legal"><article><h3>Use responsibly</h3><p>By using unknownchat, you agree not to harass, threaten, exploit, impersonate, distribute unlawful material, spam, or attempt to disrupt the service. You are responsible for what you send and for deciding whether to continue a conversation.</p></article><article><h3>No guarantees</h3><p>The service is provided as-is. We do not verify participants, guarantee availability, moderate every conversation, or warrant the accuracy of answers. You use the service at your own risk. Applicable law may provide rights that these terms cannot limit.</p></article></div>
+    </section>
+  </main>
+
+  <footer class="wrap footer"><span>© <span id="year"></span> unknownchat · A conversation, then a clean slate.</span><nav><a href="#about">About</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav></footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    // Trystero's Torrent strategy uses public WebTorrent trackers for peer discovery.
+    import { joinRoom } from 'https://esm.run/@trystero-p2p/torrent';
+
+    const APP_ID = 'com.unknownchat.anonymous-qa';
+    const ROOM_ID = 'global-waiting-lobby-v1';
+    const HEARTBEAT_MS = 4000;
+    const PEER_TTL_MS = 14000;
+    const OFFER_TIMEOUT_MS = 9000;
+    const MAX_QUESTION = 500;
+    const MAX_MESSAGE = 2000;
+
+    const $ = (id) => document.getElementById(id);
+    const views = ['home-view','ask-view','answer-view','waiting-view','chat-view'];
+    const state = {
+      room: null, selfPeerId: null, presenceAction: null, controlAction: null, chatAction: null,
+      peers: new Map(), role: null, question: '', activePeer: null, matchId: null,
+      pendingPeer: null, pendingMatchId: null, offerTimer: null, heartbeat: null,
+      messages: [], typingTimer: null, lastPresence: 0, destroyed: false
+    };
+
+    function toast(message) {
+      const el = $('toast'); el.textContent = message; el.classList.add('show');
+      clearTimeout(toast.timer); toast.timer = setTimeout(() => el.classList.remove('show'), 3200);
+    }
+    function showView(name) {
+      views.forEach(id => $(id).classList.toggle('hidden', id !== name));
+      const titles = {'home-view':'Start with a question','ask-view':'Ask something real','answer-view':'Be someone's human','waiting-view':'Finding your person…','chat-view':'A human connection'};
+      $('panel-title').textContent = titles[name] || 'unknownchat';
+    }
+    function randomId() {
+      return crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+    }
+    function safeText(value, max) {
+      return typeof value === 'string' ? value.trim().slice(0, max) : '';
+    }
+    function isFresh(peer) {
+      return peer && Date.now() - peer.seenAt < PEER_TTL_MS;
+    }
+    function updatePeerCount() {
+      const count = [...state.peers.values()].filter(p => isFresh(p)).length;
+      $('peer-count').textContent = 'LOBBY · ' + count + ' PEERS';
+    }
+    function localPresence() {
+      return {type:'presence', role:state.role, question:state.role === 'asker' ? state.question : '', busy:!!state.activePeer || !!state.pendingPeer, waiting:!!state.role && !state.activePeer, seenAt:Date.now()};
+    }
+    async function announce() {
+      if (!state.presenceAction || !state.selfPeerId) return;
+      try { await state.presenceAction.send(localPresence()); } catch (error) { console.warn('Presence announce failed', error); }
+    }
+    function setNetworkStatus(label, online) {
+      $('network-status').textContent = label;
+      $('network-status').style.color = online ? 'var(--mint)' : 'var(--pink)';
+    }
+
+    async function connectLobby() {
+      try {
+        state.room = joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID);
+        const self = await state.room.getSelf();
+        state.selfPeerId = self.peerId;
+        state.presenceAction = state.room.makeAction('presence');
+        state.controlAction = state.room.makeAction('control');
+        state.chatAction = state.room.makeAction('chat');
+
+        state.presenceAction.onMessage = (data, context) => {
+          if (!data || data.type !== 'presence' || context.peerId === state.selfPeerId) return;
+          state.peers.set(context.peerId, {
+            peerId:context.peerId, role:data.role === 'asker' || data.role === 'answerer' ? data.role : null,
+            question:safeText(data.question, MAX_QUESTION), busy:!!data.busy, waiting:!!data.waiting, seenAt:Date.now()
+          });
+          updatePeerCount();
+          tryMatch();
+        };
+
+        state.controlAction.onMessage = async (data, context) => {
+          if (!data || typeof data.type !== 'string') return;
+          const peerId = context.peerId;
+          if (data.type === 'offer') {
+            const question = safeText(data.question, MAX_QUESTION);
+            if (state.role !== 'answerer' || state.activePeer || state.pendingPeer || !question || !data.matchId) {
+              state.controlAction.send({type:'reject', matchId:data.matchId}, {target:peerId}).catch(()=>{});
+              return;
+            }
+            // Reserve synchronously before awaiting network I/O so two offers cannot both win.
+            state.activePeer = peerId;
+            state.matchId = data.matchId;
+            state.question = question;
+            state.messages = [];
+            state.controlAction.send({type:'accepted', matchId:state.matchId}, {target:peerId}).catch(()=>{});
+            renderChat();
+            announce();
+          } else if (data.type === 'accepted') {
+            if (state.role !== 'asker' || state.pendingPeer !== peerId || state.pendingMatchId !== data.matchId || state.activePeer) return;
+            clearTimeout(state.offerTimer);
+            state.activePeer = peerId;
+            state.matchId = data.matchId;
+            state.pendingPeer = null;
+            state.pendingMatchId = null;
+            state.messages = [];
+            renderChat();
+            announce();
+          } else if (data.type === 'reject') {
+            if (state.pendingPeer === peerId && state.pendingMatchId === data.matchId) {
+              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; tryMatch();
+            }
+          } else if (data.type === 'end') {
+            if (state.activePeer === peerId && state.matchId === data.matchId) resetToHome('The other person ended the chat.');
+          } else if (data.type === 'typing' && state.activePeer === peerId && state.matchId === data.matchId) {
+            $('typing-indicator').textContent = data.value ? 'The other person is typing…' : '';
+            clearTimeout(state.typingTimer);
+            if (data.value) state.typingTimer = setTimeout(() => $('typing-indicator').textContent = '', 1800);
+          }
+        };
+
+        state.chatAction.onMessage = (data, context) => {
+          if (context.peerId !== state.activePeer || !data || data.matchId !== state.matchId || data.type !== 'message') return;
+          const message = safeText(data.text, MAX_MESSAGE);
+          if (!message) return;
+          addMessage(message, false);
+        };
+
+        state.room.onPeerJoin = peerId => {
+          if (peerId === state.selfPeerId) return;
+          state.presenceAction.send(localPresence(), {target:peerId}).catch(()=>{});
+          announce();
+        };
+        state.room.onPeerLeave = peerId => {
+          state.peers.delete(peerId); updatePeerCount();
+          if (state.activePeer === peerId) resetToHome('Your chat partner disconnected.');
+          if (state.pendingPeer === peerId) { clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; tryMatch(); }
+        };
+        state.room.onError = error => {
+          console.warn('Trystero error', error);
+          if (error?.code === 'relay-failed') setNetworkStatus('RELAY ISSUE', false);
+        };
+
+        setNetworkStatus('PEER NETWORK READY', true);
+        await announce();
+        state.heartbeat = setInterval(() => {
+          const now = Date.now();
+          for (const [id, peer] of state.peers) if (now - peer.seenAt > PEER_TTL_MS) state.peers.delete(id);
+          updatePeerCount(); announce(); tryMatch();
+        }, HEARTBEAT_MS);
+      } catch (error) {
+        console.error('Could not join Trystero lobby', error);
+        setNetworkStatus('NETWORK UNAVAILABLE', false);
+        toast('Could not connect to the peer network. Check your connection and reload.');
+      }
+    }
+
+    function tryMatch() {
+      if (!state.role || state.activePeer || state.pendingPeer || !state.controlAction) return;
+      if (state.role === 'answerer') {
+        // Answerers wait for a direct offer; they never initiate a match.
+        return;
+      }
+      const candidates = [...state.peers.values()]
+        .filter(p => p.role === 'answerer' && !p.busy && p.waiting && isFresh(p))
+        .sort((a,b) => a.peerId.localeCompare(b.peerId));
+      const candidate = candidates[0];
+      if (!candidate) return;
+      const matchId = randomId();
+      state.pendingPeer = candidate.peerId;
+      state.pendingMatchId = matchId;
+      $('waiting-copy').textContent = 'A possible match is being confirmed. Your question is only sent to the selected person.';
+      state.controlAction.send({type:'offer', matchId, question:state.question}, {target:candidate.peerId}).catch(() => {
+        if (state.pendingPeer === candidate.peerId && state.pendingMatchId === matchId) {
+          clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null;
+        }
+      });
+      state.offerTimer = setTimeout(() => {
+        if (state.pendingPeer === candidate.peerId && state.pendingMatchId === matchId) {
+          state.pendingPeer = null; state.pendingMatchId = null; announce(); tryMatch();
+        }
+      }, OFFER_TIMEOUT_MS);
+    }
+
+    function startWaiting(role, question = '') {
+      state.role = role;
+      state.question = question;
+      state.pendingPeer = null; state.pendingMatchId = null;
+      showView('waiting-view');
+      $('waiting-title').textContent = role === 'asker' ? 'Finding someone to answer…' : 'Waiting for a question…';
+      $('waiting-copy').textContent = role === 'asker' ? 'We will offer your question to one available Answerer. Keep this tab open.' : 'You are in the lobby. We will connect you when an Asker is waiting.';
+      announce(); tryMatch();
+    }
+    function renderChat() {
+      $('chat-question').textContent = state.question;
+      $('chat-question-wrap').classList.toggle('hidden', !state.question);
+      $('partner-label').textContent = state.role === 'asker' ? 'Your answerer is here' : 'Someone has a question';
+      $('messages').replaceChildren();
+      $('typing-indicator').textContent = '';
+      showView('chat-view');
+      $('message-input').placeholder = state.role === 'asker' ? 'Reply to the answer…' : 'Write a thoughtful reply…';
+      $('message-input').focus();
+      announce();
+    }
+    function addMessage(text, mine) {
+      const item = {text, mine, time:new Date()};
+      state.messages.push(item);
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble ' + (mine ? 'mine' : 'theirs');
+      const body = document.createElement('div'); body.textContent = text;
+      const time = document.createElement('time'); time.textContent = item.time.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      bubble.append(body,time); $('messages').append(bubble); $('messages').scrollTop = $('messages').scrollHeight;
+    }
+    function sendTyping(value) {
+      if (!state.activePeer || !state.controlAction) return;
+      state.controlAction.send({type:'typing', value, matchId:state.matchId}, {target:state.activePeer}).catch(()=>{});
+    }
+    function endChat() {
+      if (state.activePeer) state.controlAction.send({type:'end', matchId:state.matchId}, {target:state.activePeer}).catch(()=>{});
+      resetToHome('Chat ended. The conversation has been cleared from this page.');
+    }
+    function resetToHome(message) {
+      clearTimeout(state.offerTimer); clearTimeout(state.typingTimer);
+      state.role = null; state.question = ''; state.activePeer = null; state.matchId = null;
+      state.pendingPeer = null; state.pendingMatchId = null; state.messages = [];
+      $('messages').replaceChildren(); $('question-input').value = ''; $('question-count').textContent = '0 / 500';
+      $('message-input').value = ''; $('typing-indicator').textContent = '';
+      showView('home-view'); announce();
+      if (message) toast(message);
+    }
+
+    $('choose-ask').addEventListener('click', () => showView('ask-view'));
+    $('choose-answer').addEventListener('click', () => showView('answer-view'));
+    $('back-ask').addEventListener('click', () => showView('home-view'));
+    $('back-answer').addEventListener('click', () => showView('home-view'));
+    $('question-input').addEventListener('input', event => {
+      const value = safeText(event.target.value, MAX_QUESTION);
+      $('question-count').textContent = value.length + ' / ' + MAX_QUESTION;
+      $('find-asker').disabled = value.length < 8;
+    });
+    $('find-asker').addEventListener('click', () => {
+      const question = safeText($('question-input').value, MAX_QUESTION);
+      if (question.length < 8) return toast('Please enter a question with at least 8 characters.');
+      if (!state.room) return toast('The peer network is still connecting. Try again in a moment.');
+      startWaiting('asker', question);
+    });
+    $('find-answer').addEventListener('click', () => {
+      if (!state.room) return toast('The peer network is still connecting. Try again in a moment.');
+      startWaiting('answerer');
+    });
+    $('cancel-wait').addEventListener('click', () => resetToHome('You left the waiting queue.'));
+    $('end-chat').addEventListener('click', endChat);
+    $('message-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const text = safeText($('message-input').value, MAX_MESSAGE);
+      if (!text || !state.activePeer) return;
+      state.chatAction.send({type:'message', matchId:state.matchId, text}, {target:state.activePeer})
+        .then(() => addMessage(text, true))
+        .catch(() => toast('Message could not be sent. The peer may have disconnected.'));
+      $('message-input').value = ''; sendTyping(false);
+    });
+    $('message-input').addEventListener('input', () => {
+      sendTyping(!!$('message-input').value);
+    });
+    $('year').textContent = new Date().getFullYear();
+
+    window.addEventListener('pagehide', () => {
+      state.destroyed = true;
+      clearInterval(state.heartbeat); clearTimeout(state.offerTimer);
+      if (state.room) state.room.leave().catch(()=>{});
+    }, {once:true});
+
+    connectLobby();
+  </script>
+</body>
+</html>
