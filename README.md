@@ -30,7 +30,7 @@ Serve the repository over HTTP because the app imports an ES module:
 python -m http.server 8000
 ```
 
-Open http://localhost:8000 in two separate browser profiles. Use a normal browser window as the Asker and a private/incognito window as the Answerer. Two tabs in the same browser profile are not a valid independent-user test when browser identity persistence is enabled; this prototype currently uses ephemeral tab identities.
+Open http://localhost:8000 in two separate browser profiles. Use a normal browser window as the Asker and a private/incognito window as the Answerer. Because this prototype sets Trystero identity to `none`, separate tabs receive independent temporary identities. For the clearest test, use a normal window and a private/incognito window anyway.
 
 Also test from two devices on different networks. A successful same-device test does not prove that restrictive NATs and firewalls will work.
 
