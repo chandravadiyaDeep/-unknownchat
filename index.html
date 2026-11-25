@@ -189,7 +189,7 @@
         state.controlAction = state.room.makeAction('control');
         state.chatAction = state.room.makeAction('chat');
 
-        state.presenceAction.onMessage = (data, context) => {
+        state.presenceAction.onMessage((data, context) => {
           if (!data || data.type !== 'presence' || context.peerId === state.selfPeerId) return;
           state.peers.set(context.peerId, {
             peerId:context.peerId, role:data.role === 'asker' || data.role === 'answerer' ? data.role : null,
@@ -197,9 +197,9 @@
           });
           updatePeerCount();
           tryMatch();
-        };
+        });
 
-        state.controlAction.onMessage = async (data, context) => {
+        state.controlAction.onMessage(async (data, context) => {
           if (!data || typeof data.type !== 'string') return;
           const peerId = context.peerId;
           if (data.type === 'offer') {
@@ -241,29 +241,29 @@
             clearTimeout(state.typingTimer);
             if (data.value) state.typingTimer = setTimeout(() => $('typing-indicator').textContent = '', 1800);
           }
-        };
+        });
 
-        state.chatAction.onMessage = (data, context) => {
+        state.chatAction.onMessage((data, context) => {
           if (context.peerId !== state.activePeer || !data || data.matchId !== state.matchId || data.type !== 'message') return;
           const message = safeText(data.text, MAX_MESSAGE);
           if (!message) return;
           addMessage(message, false);
-        };
+        });
 
-        state.room.onPeerJoin = peerId => {
+        state.room.onPeerJoin(({peerId}) => {
           if (peerId === state.selfPeerId) return;
           state.presenceAction.send(localPresence(), {target:peerId}).catch(()=>{});
           announce();
-        };
-        state.room.onPeerLeave = peerId => {
+        });
+        state.room.onPeerLeave(({peerId}) => {
           state.peers.delete(peerId); updatePeerCount();
           if (state.activePeer === peerId) resetToHome('Your chat partner disconnected.');
           if (state.pendingPeer === peerId) { clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; tryMatch(); }
-        };
-        state.room.onError = error => {
+        });
+        state.room.onError(error => {
           console.warn('Trystero error', error);
           if (error?.code === 'relay-failed') setNetworkStatus('RELAY ISSUE', false);
-        };
+        });
 
         setNetworkStatus('PEER NETWORK READY', true);
         await announce();
