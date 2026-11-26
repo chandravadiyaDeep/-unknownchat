@@ -41,15 +41,15 @@ export function chooseBot(kind) {
 export function categoryFor(text) {
   const value = String(text || "").toLowerCase();
   const rules = [
-    ["study", /\\b(study|studying|exam|college|school|subject|teacher|learn|learning|homework|semester|university|class|math|revision)\\b/],
-    ["career", /\\b(job|career|salary|work|profession|interview|resume|business|internship|office|company|skill|project|startup)\\b/],
-    ["relationships", /\\b(friend|friendship|relationship|partner|love|dating|family|parents|trust|breakup|argument|communication)\\b/],
-    ["emotions", /\\b(sad|anxious|anxiety|stress|stressed|angry|lonely|overwhelmed|tired|worried|fear|feel|feeling|mood)\\b/],
-    ["confidence", /\\b(confidence|confident|shy|nervous|self esteem|insecure|failure|mistake|brave|courage)\\b/],
-    ["habits", /\\b(habit|routine|discipline|procrastinat|focus|productive|productivity|sleep|exercise|time management)\\b/],
-    ["creativity", /\\b(create|creative|design|art|draw|music|write|writing|idea|imagine|invent|video|photo)\\b/],
-    ["social", /\\b(social|talk|conversation|meet|meeting|people|introvert|extrovert|group|network)\\b/],
-    ["fun", /\\b(fun|game|movie|film|song|music|food|snack|weekend|travel|hobby|joke|random)\\b/]
+    ["study", /\b(study|studying|exam|college|school|subject|teacher|learn|learning|homework|semester|university|class|math|revision)\b/],
+    ["career", /\b(job|career|salary|work|profession|interview|resume|business|internship|office|company|skill|project|startup)\b/],
+    ["relationships", /\b(friend|friendship|relationship|partner|love|dating|family|parents|trust|breakup|argument|communication)\b/],
+    ["emotions", /\b(sad|anxious|anxiety|stress|stressed|angry|lonely|overwhelmed|tired|worried|fear|feel|feeling|mood)\b/],
+    ["confidence", /\b(confidence|confident|shy|nervous|self esteem|insecure|failure|mistake|brave|courage)\b/],
+    ["habits", /\b(habit|routine|discipline|procrastinat|focus|productive|productivity|sleep|exercise|time management)\b/],
+    ["creativity", /\b(create|creative|design|art|draw|music|write|writing|idea|imagine|invent|video|photo)\b/],
+    ["social", /\b(social|talk|conversation|meet|meeting|people|introvert|extrovert|group|network)\b/],
+    ["fun", /\b(fun|game|movie|film|song|music|food|snack|weekend|travel|hobby|joke|random)\b/]
   ];
   for (const [category, pattern] of rules) if (pattern.test(value)) return category;
   return "general";
