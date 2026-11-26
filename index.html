@@ -36,7 +36,7 @@
     <div class="topbar-right">
       <div class="activity-pill" title="Illustrative activity pulse. Includes automated participants and is not a verified live-user count." aria-label="Illustrative community activity including automated participants">
         <span class="activity-number" id="active-count">28</span>
-        <span class="activity-copy"><b>ACTIVE PARTICIPANTS</b><small>Includes automated helpers</small></span>
+        <span class="activity-copy"><b>ACTIVE PARTICIPANTS</b><small>Illustrative · includes helpers</small></span>
       </div>
       <div class="status-pill"><span class="dot"></span><span id="network-status">CONNECTING</span></div>
     </div>
@@ -355,7 +355,7 @@
       state.pendingPeer = null; state.pendingMatchId = null;
       showView('waiting-view');
       $('waiting-title').textContent = role === 'asker' ? 'Finding someone to answer…' : 'Waiting for a question…';
-      $('waiting-copy').textContent = role === 'asker' ? 'We will offer your question to one available Answerer. Keep this tab open.' : 'You are in the lobby. We will connect you when an Asker is waiting.';
+      $('waiting-copy').textContent = role === 'asker' ? 'We will look for a human Answerer first. If no one is available after about seven seconds, an automated helper may join.' : 'We will look for a human Asker first. If none is available after about seven seconds, an automated conversation starter may join.';
       announce(); tryMatch();
       scheduleBotFallback(role);
     }
