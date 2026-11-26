@@ -13,7 +13,7 @@
     button,textarea{font:inherit}button{cursor:pointer}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
     .wrap{width:min(1100px,calc(100% - 36px));margin:auto}.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff10}
     .brand{display:flex;gap:10px;align-items:center;font-weight:800;letter-spacing:-.7px;font-size:20px}.brandmark{width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--mint));display:grid;place-items:center;color:#09101b;font-weight:900}
-    .status-pill{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--mint);border:1px solid #80edc244;background:#80edc20d;border-radius:99px;padding:8px 11px;display:flex;align-items:center;gap:7px}.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint)}
+    .topbar-right{display:flex;align-items:center;gap:10px}.activity-pill{display:flex;align-items:center;gap:9px;border:1px solid #8aa4ff44;background:#8aa4ff0d;border-radius:99px;padding:7px 11px}.activity-number{font:700 16px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--blue);font-variant-numeric:tabular-nums}.activity-copy{display:flex;flex-direction:column;gap:2px}.activity-copy b{font:10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.5px}.activity-copy small{font-size:9px;color:var(--muted)}.status-pill{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--mint);border:1px solid #80edc244;background:#80edc20d;border-radius:99px;padding:8px 11px;display:flex;align-items:center;gap:7px}.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint)}
     .hero{text-align:center;padding:76px 0 38px}.eyebrow{font:11px 'DM Mono',monospace;letter-spacing:2px;color:var(--mint);text-transform:uppercase}.hero h1{font-size:clamp(40px,7vw,76px);line-height:1.02;letter-spacing:-4px;margin:18px auto 16px;max-width:850px}.gradient{background:linear-gradient(100deg,#a7b8ff 10%,#80edc2 55%,#f5a4c7 95%);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:var(--muted);font-size:16px;line-height:1.8;max-width:610px;margin:0 auto}
     .app{width:min(760px,100%);margin:22px auto 0;background:linear-gradient(145deg,#141a29,#0f131e);border:1px solid var(--line);border-radius:28px;padding:clamp(18px,4vw,32px);box-shadow:0 30px 100px #0008}
     .app-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.app-head strong{font-size:14px}.micro{font:10px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
@@ -26,29 +26,35 @@
     .notice{margin-top:15px;padding:12px 14px;background:#f5a4c70c;border:1px solid #f5a4c733;border-radius:13px;color:#d5bfd0;font-size:10px;line-height:1.65}
     .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:52px auto}.feature{padding:20px;border:1px solid var(--line);border-radius:18px;background:#101521}.feature b{font-size:13px}.feature p{font-size:11px;color:var(--muted);line-height:1.7;margin:8px 0 0}.content{padding:22px 0 65px}.content h2{font-size:23px;letter-spacing:-.8px}.content p,.content li{font-size:13px;line-height:1.85;color:var(--muted)}.content h3{font-size:15px;margin-top:24px}.faq{border-top:1px solid var(--line);padding:16px 0}.faq h3{margin:0 0 7px}.legal{display:grid;grid-template-columns:1fr 1fr;gap:18px}.legal article{background:#101521;border:1px solid var(--line);border-radius:18px;padding:20px}.footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.footer nav{display:flex;gap:16px}
     #toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#20283a;border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:12px;transition:.2s;z-index:10;max-width:calc(100% - 30px)}#toast.show{opacity:1;transform:translate(-50%,0)}
-    @media(max-width:620px){.wrap{width:min(100% - 24px,1100px)}.topbar{height:64px}.hero{padding:55px 0 25px}.hero h1{letter-spacing:-2.5px}.hero p{font-size:13px}.role-grid{grid-template-columns:1fr}.role-card{min-height:145px}.features{grid-template-columns:1fr;margin:35px auto}.legal{grid-template-columns:1fr}.messages{height:260px}.app{border-radius:22px}.status-pill{font-size:9px}.footer{display:block}.footer nav{margin-top:13px}}
+    @media(max-width:620px){.topbar-right{gap:6px}.activity-pill{padding:7px 8px;gap:6px}.activity-number{font-size:14px}.activity-copy b{font-size:8px}.activity-copy small{font-size:8px}.status-pill{padding:7px 8px}.wrap{width:min(100% - 24px,1100px)}.topbar{height:64px}.hero{padding:55px 0 25px}.hero h1{letter-spacing:-2.5px}.hero p{font-size:13px}.role-grid{grid-template-columns:1fr}.role-card{min-height:145px}.features{grid-template-columns:1fr;margin:35px auto}.legal{grid-template-columns:1fr}.messages{height:260px}.app{border-radius:22px}.status-pill{font-size:9px}.footer{display:block}.footer nav{margin-top:13px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
   </style>
 </head>
 <body>
   <header class="wrap topbar">
     <a class="brand" href="#" aria-label="unknownchat home"><span class="brandmark">?</span> unknownchat</a>
-    <div class="status-pill"><span class="dot"></span><span id="network-status">CONNECTING</span></div>
+    <div class="topbar-right">
+      <div class="activity-pill" title="Illustrative activity pulse. Includes automated participants and is not a verified live-user count." aria-label="Illustrative community activity including automated participants">
+        <span class="activity-number" id="active-count">28</span>
+        <span class="activity-copy"><b>ACTIVE PARTICIPANTS</b><small>Includes automated helpers</small></span>
+      </div>
+      <div class="status-pill"><span class="dot"></span><span id="network-status">CONNECTING</span></div>
+    </div>
   </header>
 
   <main>
     <section class="wrap hero">
       <div class="eyebrow">A little less alone on the internet</div>
-      <h1>Ask anything.<br><span class="gradient">Meet a human.</span></h1>
-      <p>No profiles. No awkward introductions. Just one honest question, one real person, and a conversation that disappears when it ends.</p>
+      <h1>Ask anything.<br><span class="gradient">Meet someone.</span></h1>
+      <p>No profiles or awkward introductions. Ask a question, meet a person or a clearly identified automated helper, and have a conversation that disappears when it ends.</p>
 
       <section class="app" aria-label="Anonymous chat">
         <div class="app-head"><strong id="panel-title">Start with a question</strong><span class="micro" id="peer-count">LOBBY · 0 PEERS</span></div>
 
         <div id="home-view">
           <div class="role-grid">
-            <button class="role-card ask" id="choose-ask" type="button"><span class="emoji">✳</span><h2>Ask a question</h2><p>Something on your mind? Find a real person willing to listen and answer.</p></button>
-            <button class="role-card answer" id="choose-answer" type="button"><span class="emoji">↗</span><h2>Answer someone</h2><p>Have a little time? Help a stranger see a different point of view.</p></button>
+            <button class="role-card ask" id="choose-ask" type="button"><span class="emoji">✳</span><h2>Ask a question</h2><p>Something on your mind? Find a person or an automated helper willing to listen and answer.</p></button>
+            <button class="role-card answer" id="choose-answer" type="button"><span class="emoji">↗</span><h2>Answer someone</h2><p>Have a little time? Help someone see a different point of view, including a question from an automated conversation starter.</p></button>
           </div>
           <div class="notice">Be kind. Never share passwords, financial details, your address, or other identifying information. You are talking to a stranger.</div>
         </div>
@@ -57,12 +63,12 @@
           <label class="field-label" for="question-input">What's your question?</label>
           <textarea class="question" id="question-input" maxlength="500" placeholder="It can be serious, random, or something you've never asked out loud..." aria-describedby="question-count"></textarea>
           <div class="counter" id="question-count">0 / 500</div>
-          <button class="primary" id="find-asker" type="button" disabled>Ask &amp; find a human →</button>
+          <button class="primary" id="find-asker" type="button" disabled>Ask &amp; find a participant →</button>
           <button class="secondary" id="back-ask" type="button" style="width:100%;margin-top:9px">Go back</button>
         </div>
 
         <div id="answer-view" class="hidden">
-          <div class="waiting" style="padding:12px 8px 22px"><div style="font-size:32px">☼</div><h2>Ready to be someone's human?</h2><p>We'll look for someone waiting with a question. Your conversation is text-only and peer-to-peer.</p></div>
+          <div class="waiting" style="padding:12px 8px 22px"><div style="font-size:32px">☼</div><h2>Ready to help someone?</h2><p>We'll look for someone waiting with a question. Your conversation is text-only and peer-to-peer.</p></div>
           <button class="primary" id="find-answer" type="button">Find someone to answer →</button>
           <button class="secondary" id="back-answer" type="button" style="width:100%;margin-top:9px">Go back</button>
         </div>
@@ -72,7 +78,7 @@
         </div>
 
         <div id="chat-view" class="hidden">
-          <div class="chat-top"><div class="partner"><div class="avatar">✳</div><div><strong id="partner-label">You're connected</strong><small>Anonymous human · text only</small></div></div><button class="end-btn" id="end-chat" type="button">End chat</button></div>
+          <div class="chat-top"><div class="partner"><div class="avatar">✳</div><div><strong id="partner-label">You're connected</strong><small id="partner-detail">Anonymous participant · text only</small></div></div><button class="end-btn" id="end-chat" type="button">End chat</button></div>
           <div class="question-banner" id="chat-question-wrap"><small>THE QUESTION</small><p id="chat-question"></p></div>
           <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
           <div class="typing" id="typing-indicator" aria-live="polite"></div>
@@ -85,17 +91,18 @@
     <section class="wrap features" aria-label="How it works">
       <article class="feature"><b>↗ Direct by design</b><p>Chat messages travel between browsers over an encrypted WebRTC data channel. Signaling relays help peers find each other.</p></article>
       <article class="feature"><b>◌ No chat history</b><p>This page does not write conversations to an application database or local storage. Messages live in this tab's memory while the chat is open.</p></article>
-      <article class="feature"><b>✳ Human, not a bot</b><p>Every conversation is with another person who chose to ask or answer. No AI-generated replies or automated profiles.</p></article>
+      <article class="feature"><b>✳ People + automated helpers</b><p>Human matches get priority. Clearly identified rule-based bots can step in after a short wait when no human is available.</p></article>
     </section>
 
     <section class="wrap content" id="about">
       <h2>A small corner of the internet for real conversations.</h2>
-      <p>unknownchat pairs people who have a question with people who are willing to answer. Choose a role, wait for a match, and talk privately. There are no public chat rooms, follower counts, profiles, or message archives.</p>
+      <p>unknownchat pairs people who have a question with people who are willing to answer. Human matches are prioritized; local rule-based bots can help when no person is available. Bot participants are identified in the chat. There are no public chat rooms, follower counts, profiles, or message archives.</p>
       <h3>How matching works</h3>
       <ol>
         <li>An Asker submits a question and becomes available in the temporary lobby.</li>
         <li>An Answerer joins and can be matched with one waiting Asker.</li>
         <li>The browsers negotiate a direct WebRTC connection through Trystero. Chat messages are sent to the matched peer, not broadcast to the lobby.</li>
+        <li>Human matches are prioritized. If no human match is available after about seven seconds, a clearly identified local rule-based bot may join.</li>
         <li>When either person ends the chat or disconnects, the session is cleared from this page.</li>
       </ol>
       <h3>Community safety rules</h3>
@@ -107,6 +114,7 @@
         <li>Do not assume that a stranger's claims or advice are accurate. Use your judgment.</li>
       </ul>
       <h2>Frequently asked questions</h2>
+      <div class="faq"><h3>Can I talk to a bot?</h3><p>Yes. If a human match is not found after a short wait, a local rule-based bot may join. Automated participants are identified in the chat, and their messages come from a JSON library in the repository. No AI API is used.</p></div>
       <div class="faq"><h3>Do I need an account?</h3><p>No. There is no registration, username, profile, or password.</p></div>
       <div class="faq"><h3>Are messages stored?</h3><p>unknownchat has no application database and does not intentionally save chat messages. Messages are held in browser memory during a session and cleared when the session ends or the page is closed. Your browser, operating system, network provider, or the other participant may still retain information outside this site's control.</p></div>
       <div class="faq"><h3>Is this completely anonymous?</h3><p>No internet service can promise absolute anonymity. WebRTC peers may learn network information such as IP addresses, and public signaling infrastructure may process connection metadata. Do not share information that could identify you.</p></div>
@@ -115,7 +123,7 @@
       <div class="faq"><h3>Does unknownchat provide professional advice?</h3><p>No. Answers are opinions from strangers, not medical, legal, financial, or professional advice.</p></div>
 
       <h2 id="privacy">Privacy notice</h2>
-      <div class="legal"><article><h3>What this page handles</h3><p>Your selected role, question, temporary peer identifiers, connection status, and messages are held in volatile page memory to make matching and chat work. The app does not create accounts, use an application database, or intentionally persist conversation content.</p><p>Trystero uses third-party signaling relays to discover peers and exchange connection setup data. Your browser also contacts the static hosting provider and may load fonts from Google Fonts.</p></article><article><h3>Your choices and limits</h3><p>Do not disclose personal or sensitive information. End the chat or close the tab to clear this page's in-memory conversation state. The other participant can copy or capture anything displayed to them.</p><p>This notice is a product summary, not legal advice or a complete jurisdiction-specific privacy policy. Before public launch, identify the hosting provider, relay endpoints, applicable jurisdiction, contact details, and any advertising or analytics services you add.</p></article></div>
+      <div class="legal"><article><h3>What this page handles</h3><p>Your selected role, question, temporary peer identifiers, connection status, and messages are held in volatile page memory to make matching and chat work. The app does not create accounts, use an application database, or intentionally persist conversation content.</p><p>Trystero uses third-party signaling relays to discover peers and exchange connection setup data. Your browser also contacts the static hosting provider and fetches the bot and activity JSON files from this site.</p></article><article><h3>Your choices and limits</h3><p>Do not disclose personal or sensitive information. End the chat or close the tab to clear this page's in-memory conversation state. The other participant can copy or capture anything displayed to them.</p><p>This notice is a product summary, not legal advice or a complete jurisdiction-specific privacy policy. Before public launch, identify the hosting provider, relay endpoints, applicable jurisdiction, contact details, and any advertising or analytics services you add.</p></article></div>
 
       <h2 id="terms">Terms of use</h2>
       <div class="legal"><article><h3>Use responsibly</h3><p>By using unknownchat, you agree not to harass, threaten, exploit, impersonate, distribute unlawful material, spam, or attempt to disrupt the service. You are responsible for what you send and for deciding whether to continue a conversation.</p></article><article><h3>No guarantees</h3><p>The service is provided as-is. We do not verify participants, guarantee availability, moderate every conversation, or warrant the accuracy of answers. You use the service at your own risk. Applicable law may provide rights that these terms cannot limit.</p></article></div>
@@ -128,6 +136,7 @@
   <script type="module">
     // Trystero's Torrent strategy uses public WebTorrent trackers for peer discovery.
     import { joinRoom } from 'https://esm.run/@trystero-p2p/torrent@0.27.0';
+    import { loadBotLibrary, chooseBot, nextBotAnswer, nextBotQuestion, categoryFor } from './bots/bot-engine.js';
 
     const APP_ID = 'chandravadiyaDeep/unknownchat';
     const ROOM_ID = 'global-waiting-lobby-v1';
@@ -136,6 +145,8 @@
     const OFFER_TIMEOUT_MS = 9000;
     const MAX_QUESTION = 500;
     const MAX_MESSAGE = 2000;
+    const BOT_FALLBACK_MS = 7000;
+    const ACTIVITY_PULSE_MS = 2500;
 
     const $ = (id) => document.getElementById(id);
     const views = ['home-view','ask-view','answer-view','waiting-view','chat-view'];
@@ -143,7 +154,8 @@
       room: null, selfPeerId: null, presenceAction: null, controlAction: null, chatAction: null,
       peers: new Map(), role: null, question: '', activePeer: null, matchId: null,
       pendingPeer: null, pendingMatchId: null, offerTimer: null, heartbeat: null,
-      messages: [], messageTimes: [], incomingMessageTimes: [], typingTimer: null, lastPresence: 0, destroyed: false
+      messages: [], messageTimes: [], incomingMessageTimes: [], typingTimer: null, lastPresence: 0, destroyed: false,
+      botFallbackTimer: null, botReplyTimer: null, botSession: null, activityTimer: null
     };
 
     function toast(message) {
@@ -168,8 +180,24 @@
       const count = [...state.peers.values()].filter(p => isFresh(p)).length;
       $('peer-count').textContent = 'LOBBY · ' + count + ' PEERS';
     }
+    async function startActivityPulse() {
+      try {
+        const response = await fetch(new URL('./bots/activity-pulse.json', import.meta.url), {cache:'no-store'});
+        if (!response.ok) throw new Error('Activity pulse file unavailable');
+        const pulse = await response.json();
+        if (!Array.isArray(pulse.values) || pulse.values.length !== 500) throw new Error('Activity pulse must contain 500 samples');
+        let index = 0;
+        $('active-count').textContent = pulse.values[index++];
+        state.activityTimer = setInterval(() => {
+          $('active-count').textContent = pulse.values[index++ % pulse.values.length];
+        }, pulse.intervalMs || ACTIVITY_PULSE_MS);
+      } catch (error) {
+        console.warn('Illustrative activity pulse unavailable', error);
+        $('active-count').textContent = '—';
+      }
+    }
     function localPresence() {
-      return {type:'presence', role:state.role, busy:!!state.activePeer || !!state.pendingPeer, waiting:!!state.role && !state.activePeer, seenAt:Date.now()};
+      return {type:'presence', role:state.role, busy:!!state.activePeer || !!state.pendingPeer || !!state.botSession, waiting:!!state.role && !state.activePeer && !state.botSession, seenAt:Date.now()};
     }
     async function announce() {
       if (!state.presenceAction || !state.selfPeerId) return;
@@ -212,10 +240,12 @@
           const peerId = context.peerId;
           if (data.type === 'offer') {
             const question = safeText(data.question, MAX_QUESTION);
-            if (state.role !== 'answerer' || state.activePeer || state.pendingPeer || !question || !data.matchId) {
+            if (state.role !== 'answerer' || state.activePeer || state.pendingPeer || state.botSession || !question || !data.matchId) {
               state.controlAction.send({type:'reject', matchId:data.matchId}, {target:peerId}).catch(()=>{});
               return;
             }
+            // A real human offer wins over a waiting local bot fallback.
+            clearTimeout(state.botFallbackTimer);
             // Reserve synchronously before awaiting network I/O so two offers cannot both win.
             state.activePeer = peerId;
             state.matchId = data.matchId;
@@ -226,7 +256,7 @@
             announce();
           } else if (data.type === 'accepted') {
             if (state.role !== 'asker' || state.pendingPeer !== peerId || state.pendingMatchId !== data.matchId || state.activePeer) return;
-            clearTimeout(state.offerTimer);
+            clearTimeout(state.offerTimer); clearTimeout(state.botFallbackTimer);
             state.activePeer = peerId;
             state.matchId = data.matchId;
             state.pendingPeer = null;
@@ -292,7 +322,7 @@
     }
 
     function tryMatch() {
-      if (!state.role || state.activePeer || state.pendingPeer || !state.controlAction) return;
+      if (!state.role || state.activePeer || state.pendingPeer || state.botSession || !state.controlAction) return;
       if (state.role === 'answerer') {
         // Answerers wait for a direct offer; they never initiate a match.
         return;
@@ -327,11 +357,75 @@
       $('waiting-title').textContent = role === 'asker' ? 'Finding someone to answer…' : 'Waiting for a question…';
       $('waiting-copy').textContent = role === 'asker' ? 'We will offer your question to one available Answerer. Keep this tab open.' : 'You are in the lobby. We will connect you when an Asker is waiting.';
       announce(); tryMatch();
+      scheduleBotFallback(role);
+    }
+    function scheduleBotFallback(role) {
+      clearTimeout(state.botFallbackTimer);
+      state.botFallbackTimer = setTimeout(async () => {
+        if (state.role !== role || state.activePeer || state.botSession) return;
+        if (state.pendingPeer) {
+          scheduleBotFallback(role);
+          return;
+        }
+        try {
+          await loadBotLibrary();
+          if (state.role !== role || state.activePeer || state.botSession) return;
+          const bot = chooseBot(role === 'asker' ? 'answerer' : 'questioner');
+          beginBotSession(bot);
+        } catch (error) {
+          console.error('Could not start local bot participant', error);
+          toast('No human match was found and the helper library could not load. Please try again.');
+        }
+      }, BOT_FALLBACK_MS);
+    }
+    function beginBotSession(bot) {
+      clearTimeout(state.botFallbackTimer); clearTimeout(state.botReplyTimer);
+      state.pendingPeer = null; state.pendingMatchId = null;
+      state.botSession = {bot, kind:bot.kind, category:'general'};
+      if (bot.kind === 'questioner') {
+        const first = nextBotQuestion(bot);
+        state.question = first.text;
+        state.botSession.category = first.category;
+      } else {
+        state.botSession.category = categoryFor(state.question);
+      }
+      state.messages = []; state.messageTimes = []; state.incomingMessageTimes = [];
+      renderChat();
+      announce();
+      if (bot.kind === 'answerer') {
+        $('typing-indicator').textContent = bot.name + ' is thinking…';
+        state.botReplyTimer = setTimeout(() => {
+          if (!state.botSession || state.botSession.bot.id !== bot.id) return;
+          $('typing-indicator').textContent = '';
+          const reply = nextBotAnswer(bot, state.botSession.category);
+          addMessage(reply.text, false);
+        }, 1250 + Math.floor(Math.random()*900));
+      }
+    }
+    function respondWithBot(userText) {
+      const session = state.botSession;
+      if (!session) return;
+      clearTimeout(state.botReplyTimer);
+      $('typing-indicator').textContent = session.bot.name + ' is thinking…';
+      const category = categoryFor(userText);
+      state.botReplyTimer = setTimeout(() => {
+        if (state.botSession !== session) return;
+        const reply = session.kind === 'answerer'
+          ? nextBotAnswer(session.bot, category)
+          : nextBotQuestion(session.bot, category);
+        $('typing-indicator').textContent = '';
+        addMessage(reply.text, false);
+      }, 1100 + Math.floor(Math.random()*1400));
     }
     function renderChat() {
       $('chat-question').textContent = state.question;
       $('chat-question-wrap').classList.toggle('hidden', !state.question);
-      $('partner-label').textContent = state.role === 'asker' ? 'Your answerer is here' : 'Someone has a question';
+      $('partner-label').textContent = state.botSession
+        ? (state.botSession.kind === 'answerer' ? state.botSession.bot.name + ' joined' : state.botSession.bot.name + ' has a question')
+        : (state.role === 'asker' ? 'Your answerer is here' : 'Someone has a question');
+      $('partner-detail').textContent = state.botSession
+        ? 'Automated participant · rule-based replies'
+        : 'Anonymous human · text only';
       $('messages').replaceChildren();
       $('typing-indicator').textContent = '';
       showView('chat-view');
@@ -357,7 +451,8 @@
       resetToHome('Chat ended. The conversation has been cleared from this page.');
     }
     function resetToHome(message) {
-      clearTimeout(state.offerTimer); clearTimeout(state.typingTimer);
+      clearTimeout(state.offerTimer); clearTimeout(state.typingTimer); clearTimeout(state.botFallbackTimer); clearTimeout(state.botReplyTimer);
+      state.botSession = null;
       state.role = null; state.question = ''; state.activePeer = null; state.matchId = null;
       state.pendingPeer = null; state.pendingMatchId = null; state.messages = [];
       state.messageTimes = []; state.incomingMessageTimes = [];
@@ -391,11 +486,17 @@
     $('message-form').addEventListener('submit', event => {
       event.preventDefault();
       const text = safeText($('message-input').value, MAX_MESSAGE);
-      if (!text || !state.activePeer) return;
+      if (!text || (!state.activePeer && !state.botSession)) return;
       const now = Date.now();
       state.messageTimes = state.messageTimes.filter(time => now - time < 10000);
       if (state.messageTimes.length >= 8) { toast('Please slow down and give the other person time to reply.'); return; }
       state.messageTimes.push(now);
+      if (state.botSession) {
+        addMessage(text, true);
+        $('message-input').value = '';
+        respondWithBot(text);
+        return;
+      }
       state.chatAction.send({type:'message', matchId:state.matchId, text}, {target:state.activePeer})
         .then(() => addMessage(text, true))
         .catch(() => toast('Message could not be sent. The peer may have disconnected.'));
@@ -408,10 +509,12 @@
 
     window.addEventListener('pagehide', () => {
       state.destroyed = true;
-      clearInterval(state.heartbeat); clearTimeout(state.offerTimer);
+      clearInterval(state.heartbeat); clearTimeout(state.offerTimer); clearTimeout(state.botFallbackTimer); clearTimeout(state.botReplyTimer); clearInterval(state.activityTimer);
       if (state.room) state.room.leave().catch(()=>{});
     }, {once:true});
 
+    startActivityPulse();
+    loadBotLibrary().catch(error => console.warn('Bot library will be loaded when needed', error));
     connectLobby();
   </script>
 </body>
