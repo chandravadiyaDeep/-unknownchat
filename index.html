@@ -213,6 +213,27 @@
       try {
         // Trystero 0.27.0 accepts only (config, roomId); room errors are handled by room.onError below.
         state.room = joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID);
+        state.room.onError(error => {
+          console.warn('Trystero room error', error);
+          if (error?.code === 'relay-failed') {
+            setNetworkStatus('SIGNALING RELAY ISSUE', false);
+            $('waiting-copy').textContent = 'The signaling relays are not responding. Check your connection and reload; this is not a matchmaking delay.';
+          } else if (error?.code === 'peer-connect-failed') {
+            setNetworkStatus('PEER CONNECTION FAILED', false);
+            $('waiting-copy').textContent = 'The other device was discovered, but WebRTC could not establish a direct path. This network may require a TURN relay. Try switching Wi-Fi/mobile data or another network.';
+            // Release a pending offer so the queue does not remain stuck on a failed peer.
+            if (state.pendingPeer) {
+              const failedPeer = state.peers.get(state.pendingPeer);
+              if (failedPeer) { failedPeer.busy = true; failedPeer.waiting = false; }
+              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null;
+              announce(); updatePeerCount(); tryMatch();
+            }
+            toast('Peer discovered, but the network blocked the WebRTC connection. Try another network.');
+          } else if (error?.code === 'decrypt-failed') {
+            setNetworkStatus('ROOM CONFIG MISMATCH', false);
+            toast('The two devices are not using the same room configuration.');
+          }
+        });
         const self = await state.room.getSelf();
         state.selfPeerId = self.peerId;
         state.presenceAction = state.room.makeAction('presence');
@@ -308,7 +329,7 @@
             $('waiting-copy').textContent = 'A peer has been discovered. Checking whether they are waiting in the opposite role…';
             setNetworkStatus('PEER DISCOVERED', true);
           }
-        });
+        }, {replay:true});
         state.room.onPeerLeave(({peerId}) => {
           console.info('[unknownchat] peer left', peerId);
           state.peers.delete(peerId); updatePeerCount();
@@ -318,27 +339,7 @@
             announce(); tryMatch();
           }
         });
-        state.room.onError(error => {
-          console.warn('Trystero room error', error);
-          if (error?.code === 'relay-failed') {
-            setNetworkStatus('SIGNALING RELAY ISSUE', false);
-            $('waiting-copy').textContent = 'The signaling relays are not responding. Check your connection and reload; this is not a matchmaking delay.';
-          } else if (error?.code === 'peer-connect-failed') {
-            setNetworkStatus('PEER CONNECTION FAILED', false);
-            $('waiting-copy').textContent = 'The other device was discovered, but WebRTC could not establish a direct path. This network may require a TURN relay. Try switching Wi-Fi/mobile data or another network.';
-            // Release a pending offer so the queue does not remain stuck on a failed peer.
-            if (state.pendingPeer) {
-              const failedPeer = state.peers.get(state.pendingPeer);
-              if (failedPeer) { failedPeer.busy = true; failedPeer.waiting = false; }
-              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null;
-              announce(); updatePeerCount(); tryMatch();
-            }
-            toast('Peer discovered, but the network blocked the WebRTC connection. Try another network.');
-          } else if (error?.code === 'decrypt-failed') {
-            setNetworkStatus('ROOM CONFIG MISMATCH', false);
-            toast('The two devices are not using the same room configuration.');
-          }
-        });
+
 
         setNetworkStatus('SIGNALING STARTED', true);
         $('waiting-copy').textContent = 'Connected to the signaling network. Looking for another person in the same lobby…';
