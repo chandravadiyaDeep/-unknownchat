@@ -62,8 +62,8 @@ jobs:
               raise SystemExit(f"Duplicate HTML ids: {duplicates}")
           if missing:
               raise SystemExit(f"JavaScript references missing HTML ids: {missing}")
-          if "@trystero-p2p/torrent@0.27.0" not in script:
-              raise SystemExit("Trystero dependency must remain pinned to 0.27.0")
+          if "https://esm.run/trystero@0.27.0" not in script:
+              raise SystemExit("Trystero default Nostr dependency must remain pinned to 0.27.0")
           print(f"Validated {len(ids)} unique HTML ids and {len(referenced)} JavaScript selectors")
           PY
           node --check /tmp/unknownchat.mjs
