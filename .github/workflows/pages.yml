@@ -23,6 +23,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate bot and activity JSON
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          library = json.loads(Path("bots/bot-library.json").read_text(encoding="utf-8"))
+          bots = library.get("bots", [])
+          answerers = [bot for bot in bots if bot.get("kind") == "answerer"]
+          questioners = [bot for bot in bots if bot.get("kind") == "questioner"]
+          assert len(bots) == 40, f"Expected 40 bots, found {len(bots)}"
+          assert len(answerers) == 20, f"Expected 20 answerers, found {len(answerers)}"
+          assert len(questioners) == 20, f"Expected 20 questioners, found {len(questioners)}"
+          assert all(len(bot.get("replies", [])) == 100 for bot in bots), "Every bot must have 100 messages"
+          assert all(len({reply.get("text") for reply in bot["replies"]}) == 100 for bot in bots), "Duplicate reply inside a bot profile"
+          pulse = json.loads(Path("bots/activity-pulse.json").read_text(encoding="utf-8"))
+          assert len(pulse.get("values", [])) == 500, "Activity pulse must contain 500 samples"
+          assert all(isinstance(value, int) and 0 < value < 100 for value in pulse["values"]), "Invalid activity pulse values"
+          print("Validated 40 bots, 4,000 bot messages, and 500 activity samples.")
+          PY
       - name: Validate inline JavaScript
         run: |
           python3 - <<'PY'
@@ -47,6 +67,7 @@ jobs:
           print(f"Validated {len(ids)} unique HTML ids and {len(referenced)} JavaScript selectors")
           PY
           node --check /tmp/unknownchat.mjs
+          node --check bots/bot-engine.js
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload static site
