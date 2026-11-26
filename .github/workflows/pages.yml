@@ -70,10 +70,11 @@ jobs:
           node --check bots/bot-engine.js
           python3 - <<'PY'
           from pathlib import Path
-          import re
 
           html = Path("index.html").read_text(encoding="utf-8")
-          script = re.search(r'<script type="module">([\\s\\S]*?)</script>', html).group(1)
+          marker = '<script type="module">'
+          assert marker in html, "Module script not found"
+          script = html.split(marker, 1)[1].split("</script>", 1)[0]
           assert "https://esm.run/trystero@0.27.0" in script, "Expected pinned Trystero 0.27.0 default Nostr strategy"
           assert "@trystero-p2p/torrent" not in script, "Legacy Torrent strategy should not be used"
           assert "joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID);" in script, "Trystero 0.27 must use the two-argument joinRoom API"
