@@ -134,15 +134,16 @@
   <div id="toast" role="status" aria-live="polite"></div>
 
   <script type="module">
-    // Trystero's Torrent strategy uses public WebTorrent trackers for peer discovery.
-    import { joinRoom } from 'https://esm.run/@trystero-p2p/torrent@0.27.0';
+    // Trystero's default Nostr strategy uses public Nostr relays for peer discovery.
+    // Both clients must use the same pinned version, appId, room ID, and strategy.
+    import { joinRoom } from 'https://esm.run/trystero@0.27.0';
     import { loadBotLibrary, chooseBot, nextBotAnswer, nextBotQuestion, categoryFor } from './bots/bot-engine.js';
 
     const APP_ID = 'chandravadiyaDeep/unknownchat';
     const ROOM_ID = 'global-waiting-lobby-v1';
     const HEARTBEAT_MS = 4000;
     const PEER_TTL_MS = 14000;
-    const OFFER_TIMEOUT_MS = 9000;
+    const OFFER_TIMEOUT_MS = 12000;
     const MAX_QUESTION = 500;
     const MAX_MESSAGE = 2000;
     const BOT_FALLBACK_MS = 7000;
@@ -210,15 +211,8 @@
 
     async function connectLobby() {
       try {
-        state.room = joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID, {
-          onJoinError: ({peerId, error}) => {
-            console.warn('WebRTC peer connection failed', peerId, error);
-            if (state.pendingPeer === peerId) {
-              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; announce(); tryMatch();
-            }
-            toast('A peer connection failed. We will keep looking for another person.');
-          }
-        });
+        // Trystero 0.27.0 accepts only (config, roomId); room errors are handled by room.onError below.
+        state.room = joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID);
         const self = await state.room.getSelf();
         state.selfPeerId = self.peerId;
         state.presenceAction = state.room.makeAction('presence');
@@ -251,9 +245,17 @@
             state.matchId = data.matchId;
             state.question = question;
             state.messages = []; state.messageTimes = []; state.incomingMessageTimes = [];
-            state.controlAction.send({type:'accepted', matchId:state.matchId}, {target:peerId}).catch(()=>{});
-            renderChat();
-            announce();
+            try {
+              await state.controlAction.send({type:'accepted', matchId:state.matchId}, {target:peerId});
+              renderChat();
+              announce();
+            } catch (error) {
+              console.warn('[unknownchat] could not confirm accepted match', peerId, error);
+              state.activePeer = null; state.matchId = null; state.question = '';
+              state.messages = []; state.messageTimes = []; state.incomingMessageTimes = [];
+              startWaiting('answerer');
+              toast('The match confirmation failed. Looking for another person.');
+            }
           } else if (data.type === 'accepted') {
             if (state.role !== 'asker' || state.pendingPeer !== peerId || state.pendingMatchId !== data.matchId || state.activePeer) return;
             clearTimeout(state.offerTimer); clearTimeout(state.botFallbackTimer);
@@ -266,7 +268,10 @@
             announce();
           } else if (data.type === 'reject') {
             if (state.pendingPeer === peerId && state.pendingMatchId === data.matchId) {
-              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; tryMatch();
+              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null;
+              const peer = state.peers.get(peerId);
+              if (peer) { peer.busy = true; peer.waiting = false; }
+              announce(); updatePeerCount(); tryMatch();
             }
           } else if (data.type === 'cancel') {
             if (state.activePeer === peerId && state.matchId === data.matchId && state.role === 'answerer') {
@@ -294,20 +299,49 @@
 
         state.room.onPeerJoin(({peerId}) => {
           if (peerId === state.selfPeerId) return;
-          state.presenceAction.send(localPresence(), {target:peerId}).catch(()=>{});
+          console.info('[unknownchat] peer discovered', peerId);
+          state.presenceAction.send(localPresence(), {target:peerId}).catch(error => {
+            console.warn('[unknownchat] direct presence send failed', peerId, error);
+          });
           announce();
+          if (state.role) {
+            $('waiting-copy').textContent = 'A peer has been discovered. Checking whether they are waiting in the opposite role…';
+            setNetworkStatus('PEER DISCOVERED', true);
+          }
         });
         state.room.onPeerLeave(({peerId}) => {
+          console.info('[unknownchat] peer left', peerId);
           state.peers.delete(peerId); updatePeerCount();
           if (state.activePeer === peerId) resetToHome('Your chat partner disconnected.');
-          if (state.pendingPeer === peerId) { clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; tryMatch(); }
+          if (state.pendingPeer === peerId) {
+            clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null;
+            announce(); tryMatch();
+          }
         });
         state.room.onError(error => {
-          console.warn('Trystero error', error);
-          if (error?.code === 'relay-failed') setNetworkStatus('RELAY ISSUE', false);
+          console.warn('Trystero room error', error);
+          if (error?.code === 'relay-failed') {
+            setNetworkStatus('SIGNALING RELAY ISSUE', false);
+            $('waiting-copy').textContent = 'The signaling relays are not responding. Check your connection and reload; this is not a matchmaking delay.';
+          } else if (error?.code === 'peer-connect-failed') {
+            setNetworkStatus('PEER CONNECTION FAILED', false);
+            $('waiting-copy').textContent = 'The other device was discovered, but WebRTC could not establish a direct path. This network may require a TURN relay. Try switching Wi-Fi/mobile data or another network.';
+            // Release a pending offer so the queue does not remain stuck on a failed peer.
+            if (state.pendingPeer) {
+              const failedPeer = state.peers.get(state.pendingPeer);
+              if (failedPeer) { failedPeer.busy = true; failedPeer.waiting = false; }
+              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null;
+              announce(); updatePeerCount(); tryMatch();
+            }
+            toast('Peer discovered, but the network blocked the WebRTC connection. Try another network.');
+          } else if (error?.code === 'decrypt-failed') {
+            setNetworkStatus('ROOM CONFIG MISMATCH', false);
+            toast('The two devices are not using the same room configuration.');
+          }
         });
 
-        setNetworkStatus('PEER NETWORK READY', true);
+        setNetworkStatus('SIGNALING STARTED', true);
+        $('waiting-copy').textContent = 'Connected to the signaling network. Looking for another person in the same lobby…';
         await announce();
         state.heartbeat = setInterval(() => {
           const now = Date.now();
@@ -336,15 +370,23 @@
       state.pendingPeer = candidate.peerId;
       state.pendingMatchId = matchId;
       $('waiting-copy').textContent = 'A possible match is being confirmed. Your question is only sent to the selected person.';
-      state.controlAction.send({type:'offer', matchId, question:state.question}, {target:candidate.peerId}).catch(() => {
+      state.controlAction.send({type:'offer', matchId, question:state.question}, {target:candidate.peerId}).catch(error => {
+        console.warn('[unknownchat] offer send failed', candidate.peerId, error);
         if (state.pendingPeer === candidate.peerId && state.pendingMatchId === matchId) {
           clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null;
+          const peer = state.peers.get(candidate.peerId);
+          if (peer) { peer.busy = true; peer.waiting = false; }
+          announce(); updatePeerCount(); tryMatch();
         }
       });
       state.offerTimer = setTimeout(() => {
         if (state.pendingPeer === candidate.peerId && state.pendingMatchId === matchId) {
           state.controlAction.send({type:'cancel', matchId}, {target:candidate.peerId}).catch(()=>{});
-          state.pendingPeer = null; state.pendingMatchId = null; announce(); tryMatch();
+          state.pendingPeer = null; state.pendingMatchId = null;
+          const peer = state.peers.get(candidate.peerId);
+          if (peer) { peer.busy = true; peer.waiting = false; }
+          announce(); updatePeerCount(); tryMatch();
+          $('waiting-copy').textContent = 'That person did not confirm in time. Looking for another available person…';
         }
       }, OFFER_TIMEOUT_MS);
     }
@@ -356,6 +398,7 @@
       showView('waiting-view');
       $('waiting-title').textContent = role === 'asker' ? 'Finding someone to answer…' : 'Waiting for a question…';
       $('waiting-copy').textContent = role === 'asker' ? 'We will look for a human Answerer first. If no one is available after about seven seconds, an automated helper may join.' : 'We will look for a human Asker first. If none is available after about seven seconds, an automated conversation starter may join.';
+      setNetworkStatus('SEARCHING LOBBY', true);
       announce(); tryMatch();
       scheduleBotFallback(role);
     }
