@@ -68,6 +68,21 @@ jobs:
           PY
           node --check /tmp/unknownchat.mjs
           node --check bots/bot-engine.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path("index.html").read_text(encoding="utf-8")
+          script = re.search(r'<script type="module">([\\s\\S]*?)</script>', html).group(1)
+          assert "https://esm.run/trystero@0.27.0" in script, "Expected pinned Trystero 0.27.0 default Nostr strategy"
+          assert "@trystero-p2p/torrent" not in script, "Legacy Torrent strategy should not be used"
+          assert "joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID);" in script, "Trystero 0.27 must use the two-argument joinRoom API"
+          assert "onJoinError:" not in script, "Legacy Trystero 0.26 onJoinError callback must be removed"
+          assert "error?.code === 'peer-connect-failed'" in script, "WebRTC peer-connect-failed must be handled"
+          assert "error?.code === 'relay-failed'" in script, "Signaling relay failures must be handled"
+          assert "data.type === 'accepted'" in script and "data.type === 'reject'" in script, "Match handshake handlers are required"
+          print("Validated Trystero 0.27 Nostr strategy, current joinRoom API, and match error recovery.")
+          PY
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload static site
