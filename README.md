@@ -27,7 +27,7 @@
 - WebRTC data channels for human-to-human messaging
 - GitHub Pages with GitHub Actions deployment
 
-There is no application server and no AI API in this version. Trystero's public signaling infrastructure is used for peer discovery and connection setup. Bot profiles and replies are fetched as static JSON and selected in the visitor's browser.
+There is no application server and no AI API in this version. Trystero's public Nostr signaling relays are used for peer discovery and connection setup. Bot profiles and replies are fetched as static JSON and selected in the visitor's browser.
 
 ## Bot behavior and architecture limits
 
@@ -71,6 +71,12 @@ No build command or secret is required for the static site.
 - The site does not include analytics, advertising scripts, or an application database.
 
 Do not share passwords, payment details, precise location, phone numbers, or other sensitive information. Do not use the service for emergencies or professional advice.
+
+## Connectivity behavior
+
+- The app uses Trystero 0.27.0's default Nostr strategy for signaling. Both clients must use the same app ID, room ID, strategy, and compatible protocol version.
+- The UI distinguishes signaling readiness, peer discovery, and a failed WebRTC connection. A `peer-connect-failed` event means discovery may have succeeded but the network path could not be established.
+- Trystero's default STUN configuration may be enough for most networks, but some mobile, carrier-grade NAT, campus, VPN, or corporate networks require a TURN relay. This static build does not include private TURN credentials.
 
 ## Production launch blockers
 
