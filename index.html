@@ -211,15 +211,8 @@
 
     async function connectLobby() {
       try {
-        state.room = joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID, {
-          onJoinError: ({peerId, error}) => {
-            console.warn('WebRTC peer connection failed', peerId, error);
-            if (state.pendingPeer === peerId) {
-              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null; announce(); tryMatch();
-            }
-            toast('A peer connection failed. We will keep looking for another person.');
-          }
-        });
+        // Trystero 0.27.0 accepts only (config, roomId); room errors are handled by room.onError below.
+        state.room = joinRoom({appId:APP_ID, identity:'none'}, ROOM_ID);
         const self = await state.room.getSelf();
         state.selfPeerId = self.peerId;
         state.presenceAction = state.room.makeAction('presence');
@@ -333,6 +326,13 @@
           } else if (error?.code === 'peer-connect-failed') {
             setNetworkStatus('PEER CONNECTION FAILED', false);
             $('waiting-copy').textContent = 'The other device was discovered, but WebRTC could not establish a direct path. This network may require a TURN relay. Try switching Wi-Fi/mobile data or another network.';
+            // Release a pending offer so the queue does not remain stuck on a failed peer.
+            if (state.pendingPeer) {
+              const failedPeer = state.peers.get(state.pendingPeer);
+              if (failedPeer) { failedPeer.busy = true; failedPeer.waiting = false; }
+              clearTimeout(state.offerTimer); state.pendingPeer = null; state.pendingMatchId = null;
+              announce(); updatePeerCount(); tryMatch();
+            }
             toast('Peer discovered, but the network blocked the WebRTC connection. Try another network.');
           } else if (error?.code === 'decrypt-failed') {
             setNetworkStatus('ROOM CONFIG MISMATCH', false);
@@ -340,7 +340,7 @@
           }
         });
 
-        setNetworkStatus('SIGNALING READY', true);
+        setNetworkStatus('SIGNALING STARTED', true);
         $('waiting-copy').textContent = 'Connected to the signaling network. Looking for another person in the same lobby…';
         await announce();
         state.heartbeat = setInterval(() => {
